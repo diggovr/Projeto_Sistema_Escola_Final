@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Início — RS Sistema Escolar</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="theme-color" content="#8B1A2B">
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="rs-header">
+    <div class="rs-logo">RS</div>
+    <div class="rs-header-text">
+      <h1>Sistema Escolar</h1>
+      <p>ADS · Mobile Development</p>
+    </div>
+    <button onclick="logout()" style="margin-left:auto; background:none; border:1px solid var(--border);
+      border-radius:6px; padding:5px 10px; font-size:11px; color:var(--brand);
+      cursor:pointer; font-family:'DM Sans',sans-serif;">Sair</button>
+  </header>
+
+  <!-- ── Conteúdo ── -->
+  <div class="rs-content fade-in">
+
+    <!-- Saudação ao usuário logado -->
+    <div style="background:var(--brand); border-radius:12px; padding:18px 16px; color:#fff; margin-bottom:20px;">
+      <p style="font-size:11px; opacity:.7; text-transform:uppercase; letter-spacing:.06em;">Bem-vindo(a)</p>
+      <p style="font-family:'Playfair Display',serif; font-size:20px; margin-top:4px;" id="nome-usuario">—</p>
+      <p style="font-size:11px; opacity:.7; margin-top:2px;" id="email-usuario"></p>
+    </div>
+
+    <!-- Cards de navegação -->
+    <p class="rs-divider-label">Módulos do sistema</p>
+
+    <a href="usuario.html" style="text-decoration:none;">
+      <div class="rs-list-item" style="margin-bottom:10px;">
+        <div class="rs-avatar av-user">👤</div>
+        <div class="rs-list-info">
+          <div class="rs-list-name">Usuários</div>
+          <div class="rs-list-sub">Gerenciar contas de acesso ao sistema</div>
+        </div>
+        <span style="color:var(--text3); font-size:16px;">›</span>
+      </div>
+    </a>
+
+    <a href="curso.html" style="text-decoration:none;">
+      <div class="rs-list-item" style="margin-bottom:10px;">
+        <div class="rs-avatar av-curso">📚</div>
+        <div class="rs-list-info">
+          <div class="rs-list-name">Cursos</div>
+          <div class="rs-list-sub">Cadastrar e listar cursos disponíveis</div>
+        </div>
+        <span style="color:var(--text3); font-size:16px;">›</span>
+      </div>
+    </a>
+
+    <a href="aluno.html" style="text-decoration:none;">
+      <div class="rs-list-item" style="margin-bottom:10px;">
+        <div class="rs-avatar av-aluno">🎓</div>
+        <div class="rs-list-info">
+          <div class="rs-list-name">Alunos</div>
+          <div class="rs-list-sub">Matricular e gerenciar alunos</div>
+        </div>
+        <span style="color:var(--text3); font-size:16px;">›</span>
+      </div>
+    </a>
+
+    <a href="relatorio.html" style="text-decoration:none;">
+      <div class="rs-list-item" style="margin-bottom:10px; border-top:3px solid var(--brand);">
+        <div class="rs-avatar" style="background:#F3E5F5; color:#6A1B9A;">✨</div>
+        <div class="rs-list-info">
+          <div class="rs-list-name">Relatório com IA</div>
+          <div class="rs-list-sub">Análise generativa com Claude (Anthropic)</div>
+        </div>
+        <span class="rs-tag" style="background:#F3E5F5; color:#6A1B9A;">Novo</span>
+      </div>
+    </a>
+
+    <!-- Status da API -->
+    <hr class="rs-divider">
+    <div class="api-badge" id="api-badge">Verificando API…</div>
+    <p style="font-size:10px; color:var(--text3);">Backend: FastAPI + SQLite · Porta 8000</p>
+
+  </div>
+
+  <!-- ── Navegação inferior ── -->
+  <nav class="rs-nav">
+    <a class="rs-nav-btn active" href="index.html" data-page="index">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      Início
+    </a>
+    <a class="rs-nav-btn" href="aluno.html" data-page="aluno">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+      </svg>
+      Alunos
+    </a>
+    <a class="rs-nav-btn" href="curso.html" data-page="curso">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+      </svg>
+      Cursos
+    </a>
+    <a class="rs-nav-btn" href="usuario.html" data-page="usuario">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="8" r="4"/>
+        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+      </svg>
+      Usuários
+    </a>
+    <a class="rs-nav-btn" href="relatorio.html" data-page="relatorio">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2z"/>
+        <path d="M15 5v14a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2h-2a2 2 0 00-2 2z"/>
+        <path d="M9 10V5a2 2 0 012-2h2a2 2 0 012 2v5"/>
+      </svg>
+      Relatório
+    </a>
+  </nav>
+
+
+  <script src="js/app.js"></script>
+  <script>
+    // Garante que o usuário está logado
+    const usuario = checkAuth();
+
+    // Exibe nome e email no header de boas-vindas
+    document.getElementById('nome-usuario').textContent = usuario.nome || 'Usuário';
+    document.getElementById('email-usuario').textContent = usuario.email || '';
+
+    // Verifica status da API
+    checkApiStatus();
+  </script>
+</body>
+</html>

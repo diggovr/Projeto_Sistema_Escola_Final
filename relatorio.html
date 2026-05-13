@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatório IA — RS Sistema Escolar</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#8B1A2B">
+  <style>
+    /* ── KPI Cards ── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .kpi-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--brand);
+      border-radius: var(--radius);
+      padding: 14px 12px;
+      text-align: center;
+    }
+    .kpi-valor {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      color: var(--brand-dark);
+      line-height: 1;
+    }
+    .kpi-label {
+      font-size: 10px;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 5px;
+    }
+
+    /* ── Barras por curso ── */
+    .curso-bar-wrap { margin-bottom: 10px; }
+    .curso-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .curso-bar-track {
+      height: 8px;
+      background: var(--surface2);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .curso-bar-fill {
+      height: 100%;
+      background: var(--brand);
+      border-radius: 4px;
+      transition: width 0.6s ease;
+    }
+
+    /* ── Caixa da narrativa IA ── */
+    .ia-box {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 6px;
+      min-height: 100px;
+    }
+    .ia-box-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .ia-badge {
+      font-size: 10px;
+      background: var(--brand);
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+    .ia-model {
+      font-size: 10px;
+      color: var(--text3);
+    }
+    .ia-narrativa {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+    .ia-narrativa.vazio {
+      color: var(--text3);
+      font-style: italic;
+      font-size: 12px;
+    }
+
+    /* ── Cursor piscante durante a digitação ── */
+    .cursor-blink {
+      display: inline-block;
+      width: 2px; height: 14px;
+      background: var(--brand);
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 0.7s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* ── Nota pedagógica ── */
+    .nota-box {
+      background: var(--brand-light);
+      border-left: 3px solid var(--brand);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 10px 14px;
+      font-size: 11px;
+      color: var(--brand-dark);
+      line-height: 1.6;
+      margin-top: 16px;
+    }
+    .nota-box strong { display: block; margin-bottom: 4px; }
+
+    /* ── Diagrama de arquitetura ── */
+    .arq-box {
+      background: #1A0A0D;
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: #F7F2EC;
+      line-height: 1.7;
+      margin: 10px 0 16px;
+      overflow-x: auto;
+    }
+    .arq-box .verde  { color: #81C784; }
+    .arq-box .amarelo { color: #FFD54F; }
+    .arq-box .cinza  { color: #9E9E9E; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="rs-header">
+    <div class="rs-logo">RS</div>
+    <div class="rs-header-text">
+      <h1>Relatório com IA</h1>
+      <p>Análise generativa — Claude API</p>
+    </div>
+    <a href="index.html" style="margin-left:auto; background:none; border:1px solid var(--border);
+      border-radius:6px; padding:5px 10px; font-size:11px; color:var(--brand);
+      text-decoration:none; font-family:'DM Sans',sans-serif;">← Início</a>
+  </header>
+
+  <div class="rs-content fade-in">
+
+    <!-- ── KPIs ── -->
+    <p class="rs-form-title">Painel Geral</p>
+    <p class="rs-form-subtitle">Dados carregados da API em tempo real</p>
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-valor" id="kpi-alunos">—</div>
+        <div class="kpi-label">Alunos</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-valor" id="kpi-cursos">—</div>
+        <div class="kpi-label">Cursos</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-valor" id="kpi-usuarios">—</div>
+        <div class="kpi-label">Usuários</div>
+      </div>
+    </div>
+
+    <!-- ── Distribuição por curso ── -->
+    <hr class="rs-divider">
+    <p class="rs-divider-label">Alunos por curso</p>
+    <div id="barras-cursos">
+      <p style="font-size:12px;color:var(--text3);font-style:italic;">Carregando…</p>
+    </div>
+
+    <!-- ── Diagrama de arquitetura ── -->
+    <hr class="rs-divider">
+    <p class="rs-divider-label">Como funciona</p>
+    <div class="arq-box">
+<span class="cinza">  Browser            Backend (Python)      Claude API</span>
+<span class="cinza">    │                      │                      │</span>
+<span class="verde">    │  GET /relatorio/     │                      │</span>
+<span class="verde">    │  narrativa           │                      │</span>
+<span class="verde">    │ ───────────────────▶ │                      │</span>
+<span class="cinza">    │                      │  POST /v1/messages   │</span>
+<span class="amarelo">    │                      │  + API Key (oculta)  │</span>
+<span class="cinza">    │                      │ ───────────────────▶ │</span>
+<span class="cinza">    │                      │   { narrativa }      │</span>
+<span class="cinza">    │                      │ ◀─────────────────── │</span>
+<span class="verde">    │  { narrativa: "..." }│                      │</span>
+<span class="verde">    │ ◀─────────────────── │                      │</span>
+<span class="cinza">    │                      │                      │</span>
+<span class="amarelo">  ✅ A key NUNCA chega    </span>
+<span class="amarelo">     ao browser           </span>
+    </div>
+
+    <!-- ── Botão gerar ── -->
+    <button class="rs-btn" id="btn-gerar" onclick="gerarNarrativa()">
+      ✨ Gerar Análise com Claude
+    </button>
+
+    <div class="rs-alert-err" id="err-ia" style="margin-top:10px;"></div>
+
+    <!-- ── Caixa da narrativa ── -->
+    <div class="ia-box" style="margin-top:12px;">
+      <div class="ia-box-header">
+        <span class="ia-badge">Claude</span>
+        <span class="ia-model">claude-sonnet-4-20250514 · via backend Python</span>
+      </div>
+      <div class="ia-narrativa vazio" id="ia-narrativa">
+        Clique em "Gerar Análise com Claude" para ver a narrativa aqui.
+      </div>
+    </div>
+
+    <!-- ── Nota pedagógica ── -->
+    <div class="nota-box">
+      <strong>📚 Ponto pedagógico — Para o professor</strong>
+      A API Key fica em <code>backend/.env</code> — nunca no código e nunca no browser.
+      O frontend chama apenas <code>GET /relatorio/narrativa</code> no próprio servidor.
+      O Python monta o prompt, chama o Claude e devolve só o texto gerado.
+      <br><br>
+      Esse padrão de <strong>proxy seguro</strong> é o mesmo usado em produção em qualquer
+      plataforma: React Native, Android, iOS — a key sempre fica no servidor.
+    </div>
+
+  </div>
+
+  <!-- ── Navegação inferior ── -->
+  <nav class="rs-nav">
+    <a class="rs-nav-btn" href="index.html" data-page="index">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      Início
+    </a>
+    <a class="rs-nav-btn" href="aluno.html" data-page="aluno">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+      </svg>
+      Alunos
+    </a>
+    <a class="rs-nav-btn" href="curso.html" data-page="curso">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+      </svg>
+      Cursos
+    </a>
+    <a class="rs-nav-btn active" href="relatorio.html" data-page="relatorio">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2z"/>
+        <path d="M15 5v14a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2h-2a2 2 0 00-2 2z"/>
+        <path d="M9 10V5a2 2 0 012-2h2a2 2 0 012 2v5"/>
+      </svg>
+      Relatório
+    </a>
+  </nav>
+
+  <script src="js/app.js"></script>
+  <script>
+    checkAuth();
+
+    // ── Carrega KPIs e barras via GET /alunos, /cursos, /usuarios ──
+    async function carregarDados() {
+      const [alunos, cursos, usuarios] = await Promise.all([
+        getAlunos(), getCursos(), getUsuarios()
+      ]);
+
+      document.getElementById('kpi-alunos').textContent   = alunos.length;
+      document.getElementById('kpi-cursos').textContent   = cursos.length;
+      document.getElementById('kpi-usuarios').textContent = usuarios.length;
+
+      renderBarras(alunos, cursos);
+    }
+
+    function renderBarras(alunos, cursos) {
+      const container = document.getElementById('barras-cursos');
+      if (cursos.length === 0) {
+        container.innerHTML = '<p style="font-size:12px;color:var(--text3);font-style:italic;">Nenhum curso cadastrado ainda.</p>';
+        return;
+      }
+      const max = Math.max(...cursos.map(c =>
+        alunos.filter(a => a.curso_id === c.id).length
+      ), 1);
+
+      container.innerHTML = cursos.map(c => {
+        const qtd = alunos.filter(a => a.curso_id === c.id).length;
+        const pct = Math.round((qtd / max) * 100);
+        return `
+          <div class="curso-bar-wrap">
+            <div class="curso-bar-label">
+              <span>${c.nome}</span>
+              <span style="color:var(--brand);font-weight:600;">${qtd} aluno${qtd !== 1 ? 's' : ''}</span>
+            </div>
+            <div class="curso-bar-track">
+              <div class="curso-bar-fill" style="width:${pct}%"></div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    // ══════════════════════════════════════════════════════
+    //  CHAMADA À IA — apenas GET no próprio backend
+    //  A API Key do Claude fica em backend/.env — segura
+    //  O browser nunca vê a chave
+    // ══════════════════════════════════════════════════════
+    async function gerarNarrativa() {
+      const btn   = document.getElementById('btn-gerar');
+      const caixa = document.getElementById('ia-narrativa');
+
+      btn.disabled = true;
+      btn.textContent = 'Gerando…';
+      caixa.classList.remove('vazio');
+      caixa.innerHTML = 'Analisando os dados<span class="cursor-blink"></span>';
+      document.getElementById('err-ia').style.display = 'none';
+
+      try {
+        // ── Chama o backend Python — NÃO a API do Claude diretamente ──
+        const res = await fetch(`${API_URL}/relatorio/narrativa`);
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.detail || 'Erro no servidor');
+        }
+
+        const data = await res.json();
+
+        // Atualiza os KPIs com dados do retorno
+        document.getElementById('kpi-alunos').textContent   = data.dados.total_alunos;
+        document.getElementById('kpi-cursos').textContent   = data.dados.total_cursos;
+        document.getElementById('kpi-usuarios').textContent = data.dados.total_usuarios;
+
+        // Efeito de digitação caractere por caractere
+        const narrativa = data.narrativa;
+        caixa.textContent = '';
+        let i = 0;
+        const tick = setInterval(() => {
+          caixa.textContent += narrativa[i++];
+          if (i >= narrativa.length) clearInterval(tick);
+        }, 12);
+
+      } catch (err) {
+        caixa.classList.add('vazio');
+        caixa.textContent = '';
+        showError('err-ia', err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '✨ Gerar Análise com Claude';
+      }
+    }
+
+    carregarDados();
+  </script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Usuários — RS Sistema Escolar</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#8B1A2B">
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="rs-header">
+    <div class="rs-logo">RS</div>
+    <div class="rs-header-text">
+      <h1>Usuários</h1>
+      <p>Gerenciar contas</p>
+    </div>
+    <a href="index.html" style="margin-left:auto; background:none; border:1px solid var(--border);
+      border-radius:6px; padding:5px 10px; font-size:11px; color:var(--brand);
+      cursor:pointer; font-family:'DM Sans',sans-serif; text-decoration:none;">← Início</a>
+  </header>
+
+  <div class="rs-content fade-in">
+
+    <!-- ── Formulário de cadastro ── -->
+    <p class="rs-form-title">Novo Usuário</p>
+    <p class="rs-form-subtitle">Preencha os dados para criar uma conta</p>
+
+    <div class="rs-alert-err" id="err-usuario"></div>
+    <div class="rs-alert-ok"  id="ok-usuario"></div>
+
+    <!-- Nome -->
+    <div class="rs-field">
+      <label class="rs-label" for="nome">Nome completo <span class="req">*</span></label>
+      <input class="rs-input" type="text" id="nome" placeholder="Ana Silva">
+    </div>
+
+    <!-- E-mail -->
+    <div class="rs-field">
+      <label class="rs-label" for="email">E-mail <span class="req">*</span></label>
+      <input class="rs-input" type="email" id="email" placeholder="ana@email.com">
+    </div>
+
+    <!-- Senha -->
+    <div class="rs-field">
+      <label class="rs-label" for="senha">Senha <span class="req">*</span></label>
+      <input class="rs-input" type="password" id="senha" placeholder="mínimo 6 caracteres">
+      <span class="rs-hint">A senha será armazenada no banco de dados.</span>
+    </div>
+
+    <!-- Perfil -->
+    <div class="rs-field">
+      <label class="rs-label" for="perfil">Perfil</label>
+      <select class="rs-select" id="perfil">
+        <option value="aluno">Aluno</option>
+        <option value="professor">Professor</option>
+        <option value="admin">Administrador</option>
+      </select>
+    </div>
+
+    <button class="rs-btn" id="btn-salvar">Cadastrar Usuário</button>
+
+    <!-- ── Lista de usuários ── -->
+    <hr class="rs-divider">
+    <p class="rs-divider-label">Usuários cadastrados</p>
+
+    <div id="lista-usuarios">
+      <div class="rs-empty">
+        <div class="rs-empty-icon">👤</div>
+        Carregando usuários…
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Navegação inferior ── -->
+  <nav class="rs-nav">
+    <a class="rs-nav-btn" href="index.html" data-page="index">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      Início
+    </a>
+    <a class="rs-nav-btn" href="aluno.html" data-page="aluno">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+      </svg>
+      Alunos
+    </a>
+    <a class="rs-nav-btn" href="curso.html" data-page="curso">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+      </svg>
+      Cursos
+    </a>
+    <a class="rs-nav-btn active" href="usuario.html" data-page="usuario">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="8" r="4"/>
+        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+      </svg>
+      Usuários
+    </a>
+    <a class="rs-nav-btn" href="relatorio.html" data-page="relatorio">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2z"/>
+        <path d="M15 5v14a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2h-2a2 2 0 00-2 2z"/>
+        <path d="M9 10V5a2 2 0 012-2h2a2 2 0 012 2v5"/>
+      </svg>
+      Relatório
+    </a>
+  </nav>
+
+
+  <script src="js/app.js"></script>
+  <script>
+    // Verifica autenticação (exceto se vier do login sem conta)
+    // checkAuth();  ← descomente após ter o primeiro usuário cadastrado
+
+    /** Renderiza a lista de usuários na tela */
+    async function renderUsuarios() {
+      const lista = document.getElementById('lista-usuarios');
+      const usuarios = await getUsuarios();
+
+      if (usuarios.length === 0) {
+        lista.innerHTML = `
+          <div class="rs-empty">
+            <div class="rs-empty-icon">👤</div>
+            Nenhum usuário cadastrado ainda.
+          </div>`;
+        return;
+      }
+
+      lista.innerHTML = usuarios.map(u => `
+        <div class="rs-list-item">
+          <div class="rs-avatar av-user">${u.nome ? u.nome[0].toUpperCase() : 'U'}</div>
+          <div class="rs-list-info">
+            <div class="rs-list-name">${u.nome}</div>
+            <div class="rs-list-sub">${u.email}</div>
+          </div>
+          <span class="rs-tag">${u.perfil}</span>
+          <button class="rs-btn-icon" onclick="removerUsuario(${u.id})">🗑</button>
+        </div>
+      `).join('');
+    }
+
+    /** Salva novo usuário via API */
+    document.getElementById('btn-salvar').addEventListener('click', async () => {
+      const nome   = document.getElementById('nome').value.trim();
+      const email  = document.getElementById('email').value.trim();
+      const senha  = document.getElementById('senha').value.trim();
+      const perfil = document.getElementById('perfil').value;
+
+      // Validação frontend
+      if (!nome || !email || !senha) {
+        showError('err-usuario', 'Preencha todos os campos obrigatórios.');
+        return;
+      }
+      if (senha.length < 6) {
+        showError('err-usuario', 'A senha deve ter pelo menos 6 caracteres.');
+        return;
+      }
+
+      try {
+        // POST /usuarios
+        await postUsuario({ nome, email, senha, perfil });
+        showSuccess('ok-usuario', `Usuário "${nome}" cadastrado com sucesso!`);
+
+        // Limpa os campos
+        document.getElementById('nome').value  = '';
+        document.getElementById('email').value = '';
+        document.getElementById('senha').value = '';
+
+        // Atualiza a lista
+        renderUsuarios();
+      } catch (err) {
+        showError('err-usuario', err.message);
+      }
+    });
+
+    /** Remove usuário por id */
+    async function removerUsuario(id) {
+      if (!confirm('Excluir este usuário?')) return;
+      try {
+        await deleteUsuario(id);
+        renderUsuarios();
+      } catch (err) {
+        showError('err-usuario', err.message);
+      }
+    }
+
+    // Carrega a lista ao abrir a página
+    renderUsuarios();
+  </script>
+</body>
+</html>

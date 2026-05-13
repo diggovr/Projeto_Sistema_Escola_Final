@@ -1,0 +1,23 @@
+# Ambiente virtual Python — não commitar
+backend/venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Banco de dados — cada aluno tem o seu local
+backend/escola.db
+
+# VS Code (opcional — pode commitar se quiser compartilhar config)
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Variáveis de ambiente — NUNCA commitar a API Key!
+backend/.env
+
+# O .env.example SIM pode commitar (é só o template)
+# backend/.env.example  ← NÃO ignorar este

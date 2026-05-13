@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alunos — RS Sistema Escolar</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#8B1A2B">
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="rs-header">
+    <div class="rs-logo">RS</div>
+    <div class="rs-header-text">
+      <h1>Alunos</h1>
+      <p>Matrículas e cadastros</p>
+    </div>
+    <a href="index.html" style="margin-left:auto; background:none; border:1px solid var(--border);
+      border-radius:6px; padding:5px 10px; font-size:11px; color:var(--brand);
+      text-decoration:none; font-family:'DM Sans',sans-serif;">← Início</a>
+  </header>
+
+  <div class="rs-content fade-in">
+
+    <!-- ── Formulário de matrícula ── -->
+    <p class="rs-form-title">Matricular Aluno</p>
+    <p class="rs-form-subtitle">Preencha os dados para nova matrícula</p>
+
+    <div class="rs-alert-err" id="err-aluno"></div>
+    <div class="rs-alert-ok"  id="ok-aluno"></div>
+
+    <!-- Nome -->
+    <div class="rs-field">
+      <label class="rs-label" for="nome">Nome completo <span class="req">*</span></label>
+      <input class="rs-input" type="text" id="nome" placeholder="João da Silva">
+    </div>
+
+    <!-- E-mail e CPF lado a lado -->
+    <div class="rs-row">
+      <div class="rs-field">
+        <label class="rs-label" for="email">E-mail <span class="req">*</span></label>
+        <input class="rs-input" type="email" id="email" placeholder="joao@email.com">
+      </div>
+      <div class="rs-field">
+        <label class="rs-label" for="cpf">CPF</label>
+        <input class="rs-input" type="text" id="cpf" placeholder="000.000.000-00" maxlength="14">
+      </div>
+    </div>
+
+    <!-- Data de nascimento e telefone -->
+    <div class="rs-row">
+      <div class="rs-field">
+        <label class="rs-label" for="data_nasc">Nascimento</label>
+        <input class="rs-input" type="date" id="data_nasc">
+      </div>
+      <div class="rs-field">
+        <label class="rs-label" for="telefone">Telefone</label>
+        <input class="rs-input" type="tel" id="telefone" placeholder="(11) 99999-9999">
+      </div>
+    </div>
+
+    <!-- Curso (select preenchido dinamicamente via GET /cursos) -->
+    <div class="rs-field">
+      <label class="rs-label" for="curso_id">Curso <span class="req">*</span></label>
+      <select class="rs-select" id="curso_id">
+        <option value="">Selecione um curso…</option>
+      </select>
+      <span class="rs-hint">Os cursos são carregados da API em tempo real.</span>
+    </div>
+
+    <button class="rs-btn" id="btn-salvar">Matricular Aluno</button>
+
+    <!-- ── Lista de alunos ── -->
+    <hr class="rs-divider">
+    <p class="rs-divider-label">Alunos matriculados</p>
+
+    <div id="lista-alunos">
+      <div class="rs-empty">
+        <div class="rs-empty-icon">🎓</div>
+        Carregando alunos…
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Navegação inferior ── -->
+  <nav class="rs-nav">
+    <a class="rs-nav-btn" href="index.html" data-page="index">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      Início
+    </a>
+    <a class="rs-nav-btn active" href="aluno.html" data-page="aluno">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+      </svg>
+      Alunos
+    </a>
+    <a class="rs-nav-btn" href="curso.html" data-page="curso">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+      </svg>
+      Cursos
+    </a>
+    <a class="rs-nav-btn" href="usuario.html" data-page="usuario">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="8" r="4"/>
+        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+      </svg>
+      Usuários
+    </a>
+    <a class="rs-nav-btn" href="relatorio.html" data-page="relatorio">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2z"/>
+        <path d="M15 5v14a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2h-2a2 2 0 00-2 2z"/>
+        <path d="M9 10V5a2 2 0 012-2h2a2 2 0 012 2v5"/>
+      </svg>
+      Relatório
+    </a>
+  </nav>
+
+
+  <script src="js/app.js"></script>
+  <script>
+    checkAuth();
+
+    /** Preenche o select de cursos com dados da API */
+    async function carregarCursos() {
+      const select = document.getElementById('curso_id');
+      const cursos = await getCursos();
+      cursos.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.nome;
+        select.appendChild(opt);
+      });
+    }
+
+    /** Renderiza lista de alunos */
+    async function renderAlunos() {
+      const lista = document.getElementById('lista-alunos');
+      const alunos = await getAlunos();
+
+      if (alunos.length === 0) {
+        lista.innerHTML = `
+          <div class="rs-empty">
+            <div class="rs-empty-icon">🎓</div>
+            Nenhum aluno matriculado ainda.
+          </div>`;
+        return;
+      }
+
+      lista.innerHTML = alunos.map(a => `
+        <div class="rs-list-item">
+          <div class="rs-avatar av-aluno">${a.nome ? a.nome[0].toUpperCase() : 'A'}</div>
+          <div class="rs-list-info">
+            <div class="rs-list-name">${a.nome}</div>
+            <div class="rs-list-sub">${a.email} · ${a.curso_nome || 'Sem curso'}</div>
+          </div>
+          <button class="rs-btn-icon" onclick="removerAluno(${a.id})">🗑</button>
+        </div>
+      `).join('');
+    }
+
+    /** Matricula novo aluno via API */
+    document.getElementById('btn-salvar').addEventListener('click', async () => {
+      const nome      = document.getElementById('nome').value.trim();
+      const email     = document.getElementById('email').value.trim();
+      const cpf       = document.getElementById('cpf').value.trim();
+      const data_nasc = document.getElementById('data_nasc').value;
+      const telefone  = document.getElementById('telefone').value.trim();
+      const curso_id  = document.getElementById('curso_id').value;
+
+      if (!nome || !email || !curso_id) {
+        showError('err-aluno', 'Nome, e-mail e curso são obrigatórios.');
+        return;
+      }
+
+      try {
+        // POST /alunos
+        await postAluno({ nome, email, cpf, data_nasc, telefone, curso_id: Number(curso_id) });
+        showSuccess('ok-aluno', `Aluno "${nome}" matriculado com sucesso!`);
+
+        // Limpa campos
+        ['nome','email','cpf','data_nasc','telefone'].forEach(id => {
+          document.getElementById(id).value = '';
+        });
+        document.getElementById('curso_id').selectedIndex = 0;
+
+        renderAlunos();
+      } catch (err) {
+        showError('err-aluno', err.message);
+      }
+    });
+
+    /** Remove aluno por id */
+    async function removerAluno(id) {
+      if (!confirm('Excluir este aluno?')) return;
+      try {
+        await deleteAluno(id);
+        renderAlunos();
+      } catch (err) {
+        showError('err-aluno', err.message);
+      }
+    }
+
+    // Inicialização
+    carregarCursos();
+    renderAlunos();
+  </script>
+</body>
+</html>

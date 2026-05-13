@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — RS Sistema Escolar</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- PWA: manifest e ícone -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="theme-color" content="#8B1A2B">
+</head>
+<body>
+
+  <!-- ── Hero vermelho com logo ── -->
+  <div class="login-hero">
+    <div class="login-hero-logo">RS</div>
+    <h2>Sistema Escolar</h2>
+    <p>RS Treinamento &amp; Consultoria</p>
+  </div>
+
+  <!-- ── Formulário de login ── -->
+  <div class="rs-content fade-in">
+
+    <!-- Badge status da API -->
+    <div class="api-badge" id="api-badge">Verificando API…</div>
+
+    <p class="rs-form-title">Bem-vindo</p>
+    <p class="rs-form-subtitle">Informe suas credenciais para continuar</p>
+
+    <!-- Alerta de erro -->
+    <div class="rs-alert-err" id="err-login">Email ou senha inválidos.</div>
+
+    <!-- Campo email -->
+    <div class="rs-field">
+      <label class="rs-label" for="email">E-mail <span class="req">*</span></label>
+      <input class="rs-input" type="email" id="email"
+             placeholder="seu@email.com" autocomplete="email">
+    </div>
+
+    <!-- Campo senha -->
+    <div class="rs-field">
+      <label class="rs-label" for="senha">Senha <span class="req">*</span></label>
+      <input class="rs-input" type="password" id="senha"
+             placeholder="••••••••" autocomplete="current-password">
+    </div>
+
+    <!-- Botão entrar -->
+    <button class="rs-btn" id="btn-entrar">Entrar</button>
+
+    <!-- Link criar conta -->
+    <p class="footer-note">
+      Não tem conta?
+      <a class="link-text" href="usuario.html">Cadastre-se</a>
+    </p>
+
+    <!-- Crédito de aula -->
+    <p class="footer-note" style="margin-top:8px; font-size:10px;">
+      ADS · Desenvolvimento Mobile · Aula 2
+    </p>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script>
+    // Verifica a API ao carregar a página
+    checkApiStatus();
+
+    // Se já estiver logado, vai direto ao início
+    if (sessionStorage.getItem('usuario_logado')) {
+      window.location.href = 'index.html';
+    }
+
+    // ── Clique no botão Entrar ──
+    document.getElementById('btn-entrar').addEventListener('click', async () => {
+      const email = document.getElementById('email').value.trim();
+      const senha = document.getElementById('senha').value.trim();
+
+      // Validação simples no frontend
+      if (!email || !senha) {
+        showError('err-login', 'Preencha e-mail e senha.');
+        return;
+      }
+
+      try {
+        // Chama o backend: POST /login
+        const usuario = await loginUsuario(email, senha);
+
+        // Salva a sessão no sessionStorage
+        sessionStorage.setItem('usuario_logado', JSON.stringify(usuario));
+
+        // Redireciona ao painel principal
+        window.location.href = 'index.html';
+
+      } catch (err) {
+        showError('err-login', err.message);
+      }
+    });
+
+    // Permite pressionar Enter para fazer login
+    document.getElementById('senha').addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('btn-entrar').click();
+    });
+  </script>
+</body>
+</html>
