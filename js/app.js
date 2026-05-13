@@ -6,7 +6,7 @@
 // ── Endereço do servidor backend (FastAPI) ──────
 // Em desenvolvimento: http://localhost:8000
 // Em produção: troque para o IP/domínio do servidor
-const API_URL = 'http://localhost:8000';
+const API_URL = 'https://projeto-sistema-escola-final.onrender.com';
 
 // ══════════════════════════════════════════════════
 //  AUTENTICAÇÃO
