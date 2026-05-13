@@ -1,0 +1,35 @@
+# ════════════════════════════════════════════════════════
+#  RS Sistema Escolar — Render.com Deploy
+#  render.yaml  |  Configura backend + frontend
+#
+#  IMPORTANTE: Após o deploy do backend, copie a URL gerada
+#  (ex: https://rs-escola-api.onrender.com) e atualize
+#  a variável API_URL no arquivo js/app.js
+# ════════════════════════════════════════════════════════
+
+services:
+
+  # ── Backend: FastAPI + SQLite ──────────────────────────
+  - type: web
+    name: rs-escola-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port 8000
+    envVars:
+      - key: CLAUDE_API_KEY
+        sync: false        # você digita o valor manualmente no painel do Render
+
+  # ── Frontend: HTML/CSS/JS (Static Site) ───────────────
+  - type: web
+    name: rs-escola-frontend
+    runtime: static
+    staticPublishPath: .
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

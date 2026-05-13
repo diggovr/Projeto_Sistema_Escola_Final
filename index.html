@@ -128,7 +128,6 @@
     </a>
   </nav>
 
-
   <script src="js/app.js"></script>
   <script>
     // Garante que o usuário está logado
@@ -140,6 +139,14 @@
 
     // Verifica status da API
     checkApiStatus();
+
+    // ── Registro do Service Worker (PWA) ──────────────
+    // Permite instalar o app no celular/computador
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(() => console.log('✅ Service Worker registrado!'))
+        .catch(err => console.log('❌ Erro no Service Worker:', err));
+    }
   </script>
 </body>
 </html>
